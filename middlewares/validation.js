@@ -1,7 +1,8 @@
 const validation = (schema) => {
-  return (req, res, next) => {
+  return (req, _, next) => {
     const { error } = schema.validate(req.body);
     if (error) {
+      error.message = "missing fields";
       error.status = 400;
       next(error);
     }
