@@ -14,6 +14,12 @@ const userSchema = new Schema(
       minlength: 6,
       required: [true, "Set password for user"],
     },
+    subscription: {
+      type: String,
+      enum: ["starter", "pro", "business"],
+      default: "starter",
+    },
+    token: String,
   },
   { versionKey: false, timestamps: true }
 );
@@ -23,7 +29,7 @@ userSchema.post("save", handleSchemaValidationErrors);
 const registerSchema = Joi.object({
   email: Joi.string().required(),
   password: Joi.string().min(6).required(),
-  repeat_password: Joi.ref("password"),
+  repeatPassword: Joi.ref("password"),
 });
 
 const loginScmema = Joi.object({
