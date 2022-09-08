@@ -1,7 +1,8 @@
 const bcrypt = require("bcryptjs");
 const gravatar = require("gravatar");
+const { v4: uuidv4 } = require("uuid");
 const { User } = require("../../models/user");
-const { RequestError } = require("../../helpers");
+const { RequestError, sendEmail } = require("../../helpers");
 
 const register = async (req, res) => {
   const { email, password } = req.body;
@@ -12,11 +13,21 @@ const register = async (req, res) => {
   }
   const hashPassword = await bcrypt.hash(password, 10);
   const avatarURL = await gravatar.url(email);
+
+  const verificationToken = uuidv4();
   const result = await User.create({
     email,
     password: hashPassword,
     avatarURL,
   });
+
+  const data = {
+    to: email,
+    subject: "Varification",
+    html: `<a href="http://localhost:3000/api/auth/verify/${verificationToken}" target="_blank">Please, press the button</a>`,
+  };
+  await sendEmail(data);
+
   res.status(201).json({
     user: {
       email: result.email,
