@@ -1,5 +1,10 @@
+const dotenv = require("dotenv");
 const { User } = require("../../models/user");
 const { RequestError, sendEmail } = require("../../helpers");
+
+dotenv.config();
+
+const { DOMAIN } = process.env;
 
 const resendVerifyEmail = async (req, res) => {
   const { email } = req.body;
@@ -15,7 +20,7 @@ const resendVerifyEmail = async (req, res) => {
   const data = {
     to: email,
     subject: "Varification",
-    html: `<a href="http://localhost:3000/api/auth/verify/${user.verificationToken}" target="_blank">Please, press the button</a>`,
+    html: `<a href="${DOMAIN}/api/auth/verify/${user.verificationToken}" target="_blank">Please, press the button</a>`,
   };
   await sendEmail(data);
   res.json({
