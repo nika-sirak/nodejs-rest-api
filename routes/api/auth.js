@@ -12,6 +12,14 @@ router.post(
   ctrlWrapper(ctrl.register)
 );
 
+router.get("/verify/:verificationToken", ctrlWrapper(ctrl.verifyEmail));
+
+router.post(
+  "/verify",
+  validationBody(schemas.verifyEmailScmema),
+  ctrlWrapper(ctrl.resendVerifyEmail)
+);
+
 router.post(
   "/login",
   validationBody(schemas.loginScmema),
@@ -21,7 +29,7 @@ router.post(
 router.get("/current", authenticate, ctrlWrapper(ctrl.current));
 
 router.patch(
-  "/users/avatars",
+  "/avatars",
   authenticate,
   upload.single("avatar"),
   ctrlWrapper(ctrl.updateAvatar)
